@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { FaCopy, FaCheckCircle } from "react-icons/fa";
 import { useState } from "react";
 export default function Home() {
   return (
@@ -23,7 +22,6 @@ export default function Home() {
             >
               <label className="swap swap-active swap-rotate">
 
-                  <FaCopy className="mx-1" />
 
               </label>
             </button>

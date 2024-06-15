@@ -6,6 +6,7 @@ import SongElement from './SongElement';
 import { revalidatePath } from 'next/cache';
 import SubmitButton from './SubmitButton';
 import SongList from './SongList';
+import { debounce } from "lodash";
 interface Playlist {
   id: number;
   name: string;
@@ -19,12 +20,12 @@ interface Track {
 }
 
 
-
-
 export default async function Page({ params } : { params: { playlist: string } }) {
 const { data : {token}} = await Axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/spotify`);
 const plData  = await db.getPlaylist(`/${params.playlist}`, false)
 const songString = plData.tracks.map((song : Track) => song.track_id).join(",");
+
+
 let response;
 try {
 response = await Axios.get(
@@ -49,10 +50,14 @@ response = await Axios.get(
         console.log('invalid url')
         return; // Add a return statement here to exit the function if the URL is invalid
     }
-      console.log(formData.get('url'))
+     console.log(formData.get('url'))
      const res = await db.addTrack(`/${params.playlist}`, spotifyUrlMatch[1])
      console.log("THE RES", res)
      revalidatePath(`/${params.playlist}`)
+    }
+    async function liveUpdateTrackAction(){
+        "use server"
+        revalidatePath(`/${params.playlist}`)
     }
     async function deleteTrack(anonify_index : any, track_id : any){
         "use server"
@@ -73,7 +78,7 @@ return (
       <SubmitButton />
     </form>
      <div className='flex flex-col items-center justify-center px-4'>
-      <SongList songData={response.data.tracks} plData={plData} deleteTrack={deleteTrack}/>
+      <SongList pl={params.playlist} songData={response.data.tracks} plData={plData} deleteTrack={deleteTrack} liveUpdateTrackAction={liveUpdateTrackAction}/>
 
       { /*response.data.tracks.map((song : any, index:number) => {
         return <SongElement

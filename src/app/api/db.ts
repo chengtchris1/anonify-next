@@ -2,9 +2,11 @@ export const dynamic = "force-dynamic";
 require("dotenv").config();
 const sb = require("@supabase/supabase-js");
 export const supabase = sb.createClient(
-  process.env.sb_client_id,
-  process.env.sb_secret
+  process.env.sb_client_id || "https://mbrefcgxduvrtayfrchk.supabase.co",
+  process.env.sb_secret ||
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1icmVmY2d4ZHV2cnRheWZyY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMwMzQ2MDYsImV4cCI6MjAyODYxMDYwNn0.cK4-JJZQ-vNXg3ahWJwPzqu4c_aGCWpAn1ZRESu4R2I"
 );
+
 const db = {} as any;
 interface Track {
   id: number;
