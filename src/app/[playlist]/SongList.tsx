@@ -31,7 +31,7 @@ export default function SongList({pl, songData, plData, deleteTrack, liveUpdateT
         albumArt: song.album.images[0].url,
         previewUrl: song.preview_url,
         enableDelete: false,
-        votes: 0,
+        votes: plData.tracks[index].votes,
         deleteTrack: deleteTrack,
       });
     });
@@ -86,7 +86,7 @@ export default function SongList({pl, songData, plData, deleteTrack, liveUpdateT
           albumArt={song.albumArt}
           previewUrl={song.previewUrl}
           enableDelete={false}
-          votes={0}
+          votes={song.votes}
           deleteTrack={deleteTrack}
         />
       } )
