@@ -1,5 +1,6 @@
 "use client"
 import Axios from "axios";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 export default function SongElement({
@@ -37,10 +38,12 @@ export default function SongElement({
             </button>
           </div>
         <figure className="flex items-center justify-center size-24 min-w-24 sm:size-48 object-cover rounded-xl p-1">
-          <img
+          <Image
             className="overflow-hidden object-cover rounded-xl border border-white"
             src={albumArt}
             alt={album}
+            height={300}
+            width={300}
           />
         </figure>
 
