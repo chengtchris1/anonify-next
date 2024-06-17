@@ -24,8 +24,6 @@ export default async function Page({ params } : { params: { playlist: string } }
 const { data : {token}} = await Axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/spotify`);
 const plData  = await db.getPlaylist(`/${params.playlist}`, false)
 const songString = plData.tracks.map((song : Track) => song.track_id).join(",");
-
-
 let response;
 try {
 response = await Axios.get(
@@ -71,7 +69,7 @@ response = await Axios.get(
 return (
     <>
     <Song data={plData} response={response.data}/>
-
+    <div className='flex justify-center'>Playlist name: {plData.name}</div>
     <form className='flex px-4 justify-center' action={addSong}>
       <label htmlFor='url' className='px-1'>Add Song</label>
       <input className="input input-bordered w-full max-w-xs" name="url" type='text'/>

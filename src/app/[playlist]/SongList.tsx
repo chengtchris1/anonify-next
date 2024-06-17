@@ -4,8 +4,6 @@ import SongElement from "./SongElement";
 import { useEffect, useState } from "react";
 import Song from "./Song";
 import { supabase } from "../api/db";
-
-
 interface SongElementProps {
   id: number;
   track_id: string;
