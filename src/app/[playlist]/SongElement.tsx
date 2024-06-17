@@ -1,7 +1,5 @@
-"use client"
-import Axios from "axios";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import Upvotes from "./Upvotes";
 import { motion, AnimatePresence } from "framer-motion";
 export default function SongElement({
   id,
@@ -15,28 +13,9 @@ export default function SongElement({
   deleteTrack,
   track_id,
 }) {
-
-  const [upvoted, setUpvoted] = useState(false);
-  const [downvoted, setDownvoted] = useState(false);
-
-
   return (
     <div className="card card-side my-3 flex items-center  overflow-clip bg-base-100 shadow-xl sm:my-5 w-full p-1">
-      <div className="absolte left-0 top-0 flex text-center rounded-md m-0 flex-col-reverse justify-center items-center text-ellipsis p-1">
-            <button
-
-              className="btn btn-square btn-outline btn-primary btn-sm text-lg"
-            >
-              -
-            </button>
-            <span className="mx-2 text-lg">{votes}</span>
-            <button
-
-              className="btn btn-square btn-outline btn-primary btn-sm text-lg"
-            >
-              +
-            </button>
-          </div>
+      <Upvotes serverVotes={votes} id={id}/>
         <figure className="flex items-center justify-center size-24 min-w-24 sm:size-48 object-cover rounded-xl p-1">
           <Image
             className="overflow-hidden object-cover rounded-xl border border-white"

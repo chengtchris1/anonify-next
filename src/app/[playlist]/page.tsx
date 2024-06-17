@@ -6,7 +6,7 @@ import SongElement from './SongElement';
 import { revalidatePath } from 'next/cache';
 import SubmitButton from './SubmitButton';
 import SongList from './SongList';
-import { debounce } from "lodash";
+import { refresh } from '../actions';
 interface Playlist {
   id: number;
   name: string;
@@ -55,7 +55,7 @@ response = await Axios.get(
     }
     async function liveUpdateTrackAction(){
         "use server"
-        revalidatePath(`/${params.playlist}`)
+        refresh(`/${params.playlist}`)
     }
     async function deleteTrack(anonify_index : any, track_id : any){
         "use server"

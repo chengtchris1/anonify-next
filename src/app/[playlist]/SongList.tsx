@@ -4,6 +4,7 @@ import SongElement from "./SongElement";
 import { useEffect, useState } from "react";
 import Song from "./Song";
 import { supabase } from "../api/db";
+
 interface SongElementProps {
   id: number;
   track_id: string;
@@ -71,7 +72,7 @@ export default function SongList({pl, songData, plData, deleteTrack, liveUpdateT
     .subscribe();
 
     return () => { listenToDb.unsubscribe()  };
-  })
+  }, [pl]);
 
     return songElements?.map((song : any, index:number) => {
         return <SongElement

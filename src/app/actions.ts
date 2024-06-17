@@ -1,4 +1,6 @@
 "use server";
+import { revalidatePath } from "next/cache";
+import { throttle } from "lodash";
 import db from "./api/db";
 
 export async function addPlaylist(playlistName: string) {
@@ -11,3 +13,25 @@ export async function addPlaylist(playlistName: string) {
     console.error(e);
   }
 }
+
+export async function upvoteTrack(index: number) {
+  try {
+    return await db.upvoteTrack(index);
+  } catch (e) {
+    console.error(e);
+    return e;
+  }
+}
+
+export async function downvoteTrack(index: number) {
+  try {
+    return await db.downvoteTrack(index);
+  } catch (e) {
+    console.error(e);
+    return e;
+  }
+}
+export const refresh = throttle(async (path: string) => {
+  console.log("refreshing", path);
+  revalidatePath(path);
+}, 1000);
