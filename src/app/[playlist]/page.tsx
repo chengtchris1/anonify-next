@@ -44,7 +44,8 @@ response = await Axios.get(
     async function addSong(formData : FormData) {
       "use server"
      const url = formData.get('url') || '';
-     const spotifyUrlRegex = /\/track\/([a-zA-Z0-9]{22})/;
+     console.log('URL', url)
+     const spotifyUrlRegex = /(?:\/track\/|spotify:track:)?([a-zA-Z0-9]{22})/;
     const spotifyUrlMatch = (url as string).match(spotifyUrlRegex);
     if(spotifyUrlMatch) {
         console.log(spotifyUrlMatch[1])

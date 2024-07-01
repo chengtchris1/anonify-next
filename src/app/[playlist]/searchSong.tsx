@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback} from "react";
 import { debounce, throttle } from "lodash";
+import SubmitButton from "./SubmitButton";
 export default function SearchSong({searchSong, addSong}) {
   const [songField, setSongField] = useState<string>('');
   const [results, setResults] = useState<any>(null);
@@ -26,11 +27,14 @@ return (
       {
         results ? results.tracks.items.map((track: any) => {
           return (
+            <form action={addSong}>
             <div key={track.id} className='flex justify-between'>
               <span>{track.name}</span>
+              <input name="url" value={track.id}/>
               <span>{track.artists.map((artist) => artist.name).join(', ')}</span>
-              <button onClick={() => addSong(track.uri)} className='btn btn-primary'>Add</button>
+              <SubmitButton/>
             </div>
+            </form>
           )
         } ) : null
       }
