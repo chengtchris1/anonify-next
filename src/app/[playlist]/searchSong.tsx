@@ -24,11 +24,14 @@ export default function SearchSong({searchSong, addSong}) {
 return (
     <>
       <label htmlFor='url' className='px-1'>Search Song</label>
-      <input value={songField} onChange={(e)=>{setSongField(e.target.value)}} className="input input-bordered w-full max-w-xs" name="url" type='text'/>
-      <div className="w-1/2">
+      <div className="relative">
+      <input value={songField} onChange={(e)=>{setSongField(e.target.value)}} className="input input-bordered w-full max-w-xs z-40" name="url" type='text'/>
+     { (results && songField.length >= 1) && <button hidden onClick={()=>{setSongField('')}}className="btn btn-neutral">Done</button> }
+      <div className="lg:w-1/2 absolute inset-0 top-12 z-10 bg-black w-fit h-fit px-10">
       {
         (results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
           return (
+            <div className="bg-black">
             <form action={addSong}>
             <div key={track.id} className='grid grid-cols-7 border rounded-2xl p-2 m-2'>
               <div className="col-span-2">
@@ -46,9 +49,11 @@ return (
               </div>
             </div>
             </form>
+            </div>
           )
         } ) : null
       }
+      </div>
       </div>
     </>
 );
