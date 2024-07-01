@@ -35,7 +35,7 @@ return (
             <form action={addSong}>
             <div key={track.id} className='grid grid-cols-7 border rounded-2xl p-2 m-2'>
               <div className="col-span-2">
-                <Image width={100} height={100} src={track.album.images[0].url}/>
+                <Image width={100} height={100} src={track.album.images[0].url} alt={`Album art for song ${track.name}`}/>
               </div>
               <div className="col-span-2 flex items-center">
                 <span>{track.name}</span>
