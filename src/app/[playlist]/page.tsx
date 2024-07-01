@@ -7,6 +7,8 @@ import { revalidatePath } from 'next/cache';
 import SubmitButton from './SubmitButton';
 import SongList from './SongList';
 import { refresh } from '../actions';
+import { debounce } from 'lodash';
+import SearchSong from './searchSong';
 interface Playlist {
   id: number;
   name: string;
@@ -23,7 +25,9 @@ interface Track {
 export default async function Page({ params } : { params: { playlist: string } }) {
 const { data : {token}} = await Axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/spotify`);
 const plData  = await db.getPlaylist(`/${params.playlist}`, false)
-const songString = plData.tracks.map((song : Track) => song.track_id).join(",");
+const songString = plData?.tracks.map((song : Track) => song.track_id).join(",") ?? "";
+if (songString === "") {
+}
 let response;
 try {
 response = await Axios.get(
@@ -65,16 +69,28 @@ response = await Axios.get(
         revalidatePath(`/${params.playlist}`)
 
     }
-
+    async function searchSpotify(query : string){
+        "use server"
+        const res = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const data = await res.json()
+        return data;
+      }
+     //let {tracks} = await searchSpotify('Eye of the tiger');
+      //console.log(tracks)
 return (
     <>
     <Song data={plData} response={response.data}/>
-    <div className='flex justify-center'>Playlist name: {plData.name}</div>
+    <div className='flex justify-center'>Playlist name: {plData?.name ?? "Untitled Playlist"}</div>
     <form className='flex px-4 justify-center' action={addSong}>
       <label htmlFor='url' className='px-1'>Add Song</label>
       <input className="input input-bordered w-full max-w-xs" name="url" type='text'/>
       <SubmitButton />
     </form>
+    <SearchSong searchSong={searchSpotify} addSong={addSong}/>
      <div className='flex flex-col items-center justify-center px-4'>
       <SongList pl={params.playlist} songData={response.data.tracks} plData={plData} deleteTrack={deleteTrack} liveUpdateTrackAction={liveUpdateTrackAction}/>
 
