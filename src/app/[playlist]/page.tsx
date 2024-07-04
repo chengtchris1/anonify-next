@@ -91,7 +91,7 @@ return (
       <input className="input input-bordered w-full max-w-xs" name="url" type='text'/>
       <SubmitButton />
     </form>
-    <SearchSong searchSong={searchSpotify} addSong={addSong}/>
+    <SearchSong searchSong={searchSpotify} addSong={addSong} songData={response.data.tracks}/>
      <div className='flex flex-col items-center justify-center px-4'>
       <SongList pl={params.playlist} songData={response.data.tracks} plData={plData} deleteTrack={deleteTrack} liveUpdateTrackAction={liveUpdateTrackAction}/>
 

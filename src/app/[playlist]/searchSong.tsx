@@ -5,11 +5,12 @@ import { useFormStatus } from "react-dom";
 
 import SubmitButton from "./SubmitButton";
 import Image from "next/image";
-export default function SearchSong({searchSong, addSong}) {
+export default function SearchSong({songData, searchSong, addSong}) {
   const { pending } = useFormStatus()
   const [songField, setSongField] = useState<string>('');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
   const throttledSearch = useCallback(debounce(async (song) => {
     if (!song) return; // Ensure there's a value to search for
     setLoading(true);
@@ -33,6 +34,7 @@ export default function SearchSong({searchSong, addSong}) {
   }
 return (
     <>
+    <button onClick={()=>console.log(songData)}>Test</button>
       <label htmlFor='url' className='px-1'>Search Song</label>
       <div className="relative">
       <input value={songField} onChange={(e)=>{setSongField(e.target.value)}} className="input input-bordered w-full max-w-xs z-40" name="url" type='text'/>
@@ -41,6 +43,7 @@ return (
       {
         loading ? <div className="text-white">Loading...</div> :
         (!loading && results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
+          const added = songData.some(({id})=>id === track.id)
           return (
             <div className="bg-black">
             <form action={act}>
@@ -56,8 +59,8 @@ return (
               <span>{track.artists.map((artist) => artist.name).join(', ')}</span>
               </div>
               <div className="col-span-1 flex items-center">
-                <button  className='btn btn-primary ml-3' type="submit" disabled={pending}>
-                  Add
+                <button  className='btn btn-primary ml-3' type="submit" disabled={pending || added}>
+                  {added ? 'Added':'Add'}
                 </button>
               </div>
             </div>
