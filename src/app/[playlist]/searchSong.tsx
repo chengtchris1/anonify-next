@@ -1,16 +1,19 @@
 "use client";
 import { useState, useEffect, useCallback} from "react";
-import { debounce, throttle } from "lodash";
+import { debounce, set, throttle } from "lodash";
 import SubmitButton from "./SubmitButton";
 import Image from "next/image";
 export default function SearchSong({searchSong, addSong}) {
   const [songField, setSongField] = useState<string>('');
   const [results, setResults] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const throttledSearch = useCallback(debounce(async (song) => {
     if (!song) return; // Ensure there's a value to search for
+    setLoading(true);
     const data = await searchSong(song);
     console.log(song, data);
     setResults(data);
+    setLoading(false);
   }, 500), [searchSong]); // searchSong is stable, so it's okay to include it here
 
   useEffect(() => {
@@ -29,7 +32,8 @@ return (
      { (results && songField.length >= 1) && <button hidden onClick={()=>{setSongField('')}}className="btn btn-neutral">Done</button> }
       <div className="lg:w-1/2 absolute inset-0 top-12 z-10 bg-black w-fit h-fit px-10">
       {
-        (results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
+        loading ? <div className="text-white">Loading...</div> :
+        (!loading && results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
           return (
             <div className="bg-black">
             <form action={addSong}>
