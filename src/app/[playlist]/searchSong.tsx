@@ -27,7 +27,7 @@ export default function SearchSong({searchSong, addSong}) {
     return () => throttledSearch.cancel();
   }, [songField, throttledSearch]);
 
-  const act = async (e: React.FormEvent) => {
+  const act = async (e: FormData) => {
     await addSong(e);
     //setSongField('');
   }
