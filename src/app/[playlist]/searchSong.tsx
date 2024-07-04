@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect, useCallback} from "react";
 import { debounce, set, throttle } from "lodash";
+import { useFormStatus } from "react-dom";
+
 import SubmitButton from "./SubmitButton";
 import Image from "next/image";
 export default function SearchSong({searchSong, addSong}) {
+  const { pending } = useFormStatus()
   const [songField, setSongField] = useState<string>('');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,7 +17,7 @@ export default function SearchSong({searchSong, addSong}) {
     console.log(song, data);
     setResults(data);
     setLoading(false);
-  }, 500), [searchSong]); // searchSong is stable, so it's okay to include it here
+  }, 500), []); // searchSong is stable, so it's okay to include it here
 
   useEffect(() => {
     if (!songField) return;
@@ -24,6 +27,10 @@ export default function SearchSong({searchSong, addSong}) {
     return () => throttledSearch.cancel();
   }, [songField, throttledSearch]);
 
+  const act = async (e: React.FormEvent) => {
+    await addSong(e);
+    //setSongField('');
+  }
 return (
     <>
       <label htmlFor='url' className='px-1'>Search Song</label>
@@ -36,7 +43,7 @@ return (
         (!loading && results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
           return (
             <div className="bg-black">
-            <form action={addSong}>
+            <form action={act}>
             <div key={track.id} className='grid grid-cols-7 border rounded-2xl p-2 m-2'>
               <div className="col-span-2">
                 <Image width={100} height={100} src={track.album.images[0].url} alt={`Album art for song ${track.name}`}/>
@@ -49,7 +56,9 @@ return (
               <span>{track.artists.map((artist) => artist.name).join(', ')}</span>
               </div>
               <div className="col-span-1 flex items-center">
-              <SubmitButton/>
+                <button  className='btn btn-primary ml-3' type="submit" disabled={pending}>
+                  Add
+                </button>
               </div>
             </div>
             </form>
