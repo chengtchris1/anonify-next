@@ -149,5 +149,18 @@ db.downvoteTrack = async (anonify_index) => {
   console.log("Track upvoted successfully!", "Data:", data);
   return newVotes;
 };
+db.renamePlaylist = async (path, newName) => {
+  const data = await supabase
+    .from("playlists")
+    .update({ name: newName })
+    .eq("path", path)
+    .select();
+  if (data.error) {
+    console.error("Error renaming playlist:", data.error);
+    return;
+  }
+  console.log("Playlist renamed successfully!", "Data:", data);
+  return data;
+}
 
 export default db;

@@ -2,7 +2,7 @@
 import { Shippori_Antique } from "next/font/google";
 import SongElement from "./SongElement";
 import { useEffect, useState } from "react";
-import Song from "./Song";
+import Song from "./RenamePlaylist";
 import { supabase } from "../api/db";
 
 interface SongElementProps {

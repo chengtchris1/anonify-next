@@ -2,15 +2,12 @@
 import { useState, useEffect, useCallback} from "react";
 import { debounce, set, throttle } from "lodash";
 import { useFormStatus } from "react-dom";
-
 import SubmitButton from "./SubmitButton";
 import Image from "next/image";
 export default function SearchSong({songData, searchSong, addSong}) {
-  const { pending } = useFormStatus()
   const [songField, setSongField] = useState<string>('');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
   const throttledSearch = useCallback(debounce(async (song) => {
     if (!song) return; // Ensure there's a value to search for
     setLoading(true);
@@ -29,17 +26,19 @@ export default function SearchSong({songData, searchSong, addSong}) {
   }, [songField, throttledSearch]);
 
   const act = async (e: FormData) => {
-    await addSong(e);
-    //setSongField('');
+    return await addSong(e);
   }
+  const { pending } = useFormStatus()
 return (
     <>
-    <button onClick={()=>console.log(songData)}>Test</button>
-      <label htmlFor='url' className='px-1'>Search Song</label>
-      <div className="relative">
-      <input value={songField} onChange={(e)=>{setSongField(e.target.value)}} className="input input-bordered w-full max-w-xs z-40" name="url" type='text'/>
-     { (results && songField.length >= 1) && <button hidden onClick={()=>{setSongField('')}}className="btn btn-neutral">Done</button> }
-      <div className="lg:w-1/2 absolute inset-0 top-12 z-10 bg-black w-fit h-fit px-10">
+  <button onClick={() => console.log(songData)}>Test</button>
+  <label htmlFor='url' className='px-1'>Search Song</label>
+  <div className="flex flex-col items-center justify-center">
+    <div className="flex items-center">
+      <input value={songField} onChange={(e) => { setSongField(e.target.value) }} className="input input-bordered max-w-xs z-40" name="url" type='text' />
+      {(results && songField.length >= 1) && <button hidden onClick={() => { setSongField('') }} className="btn btn-neutral">Done</button>}
+    </div>
+<div className="absolute min-w-fit mt-2 bg-black px-10 z-10 top-[34%]">
       {
         loading ? <div className="text-white">Loading...</div> :
         (!loading && results && songField.length >= 1) ? results.tracks.items.map((track: any) => {
@@ -47,21 +46,25 @@ return (
           return (
             <div className="bg-black">
             <form action={act}>
-            <div key={track.id} className='grid grid-cols-7 border rounded-2xl p-2 m-2'>
-              <div className="col-span-2">
-                <Image width={100} height={100} src={track.album.images[0].url} alt={`Album art for song ${track.name}`}/>
+            <div key={track.id} className='grid grid-cols-4 border rounded-2xl p-2 m-2'>
+              <div className="col-span-1">
+                <Image width={50} height={50} src={track.album.images[0].url} alt={`Album art for song ${track.name}`}/>
               </div>
-              <div className="col-span-2 flex items-center">
+              <div className="col-span-2 flex items-start justify-center flex-col text-xs">
+              <div className="flex items-center">
                 <span>{track.name}</span>
+
                 </div>
-              <div className="col-span-2 flex items-center">
+                 <span>{track.album.name}</span>
+              <div className="flex items-center">
               <input className='hidden' name="url" value={track.id}/>
               <span>{track.artists.map((artist) => artist.name).join(', ')}</span>
               </div>
+              </div>
               <div className="col-span-1 flex items-center">
-                <button  className='btn btn-primary ml-3' type="submit" disabled={pending || added}>
+                <SubmitButton  additionalConditions={added}>
                   {added ? 'Added':'Add'}
-                </button>
+                </SubmitButton>
               </div>
             </div>
             </form>

@@ -14,6 +14,15 @@ export async function addPlaylist(playlistName: string) {
   }
 }
 
+export async function renamePlaylist(playlistPath:string, newName : string) {
+  const path = "/" + playlistPath;
+  try {
+    return await db.renamePlaylist(path, newName);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export async function upvoteTrack(index: number) {
   try {
     return await db.upvoteTrack(index);

@@ -1,6 +1,6 @@
 import React from 'react';
 import db from '../api/db';
-import Song from './Song'
+import Song from './RenamePlaylist'
 import Axios from 'axios';
 import SongElement from './SongElement';
 import { revalidatePath } from 'next/cache';
@@ -24,7 +24,7 @@ interface Track {
 
 export default async function Page({ params } : { params: { playlist: string } }) {
 const { data : {token}} = await Axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/spotify`);
-const plData  = await db.getPlaylist(`/${params.playlist}`, false)
+let plData  = await db.getPlaylist(`/${params.playlist}`, false)
 const songString = plData?.tracks.map((song : Track) => song.track_id).join(",") ?? "";
 if (songString === "") {
 }
@@ -80,12 +80,20 @@ response = await Axios.get(
         const data = await res.json()
         return data;
       }
+    async function renamePlaylist(formData : FormData){
+        "use server"
+        let newName = formData.get('newName')
+        const res = await db.renamePlaylist(`/${params.playlist}`, newName)
+        revalidatePath(`/${params.playlist}`)
+
+      }
      //let {tracks} = await searchSpotify('Eye of the tiger');
       //console.log(tracks)
 return (
     <>
-    <Song data={plData} response={response.data}/>
+    <Song plName={params.playlist} data={plData} response={response.data} renamePlaylist={renamePlaylist}/>
     <div className='flex justify-center'>Playlist name: {plData?.name ?? "Untitled Playlist"}</div>
+
     <form className='flex px-4 justify-center' action={addSong}>
       <label htmlFor='url' className='px-1'>Add Song</label>
       <input className="input input-bordered w-full max-w-xs" name="url" type='text'/>
